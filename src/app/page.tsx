@@ -1,21 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import {
-  ArrowRight,
-  BarChart3,
-  FileBarChart,
-  FileSpreadsheet,
-  FileText,
-  Landmark,
-  PieChart,
-  Presentation,
-  Scale,
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { HomeHero } from '@/components/HomeHero';
 import { ResourceMetrics } from '@/components/ResourceMetrics';
-import { VideoFeature } from '@/components/VideoFeature';
-import { HomeNewsCard, ProjectCard, InvestorResourceCard } from '@/components/cards';
+import { FeaturedVideoInvestors } from '@/components/FeaturedVideoInvestors';
+import { HomeNewsCard, ProjectCard } from '@/components/cards';
 import { RevealChild, RevealGroup, RevealOnScroll } from '@/components/Reveal';
 import { home, latestNews, projects } from '@/lib/content';
 import { SITE } from '@/lib/site';
@@ -25,17 +15,6 @@ export const metadata: Metadata = {
   description: SITE.description,
   alternates: { canonical: '/' },
 };
-
-const INVESTOR_LINKS = [
-  { label: 'Stock Chart', href: '/investors/overview/', icon: BarChart3 },
-  { label: 'Share Structure', href: '/investors/share-structure/', icon: PieChart },
-  { label: 'Presentations', href: '/investors/presentations/', icon: Presentation },
-  { label: 'Factsheet', href: '/investors/factsheets/', icon: FileText },
-  { label: 'Financial Statements', href: '/corporate/financials-statements/', icon: FileSpreadsheet },
-  { label: 'AGM Materials', href: '/investors/agm-material/', icon: Landmark },
-  { label: 'ESTMA Reports', href: '/investors/estma_reports-2/', icon: FileBarChart },
-  { label: 'LIFE', href: '/investors/life/', icon: Scale },
-];
 
 /** Small uppercase section label with the gold rule, as used across the page. */
 function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -50,7 +29,6 @@ export default function HomePage() {
     home.slides.find((s) => s.includes('home-pg-sunset')) ?? home.slides[0];
   const recent = latestNews(3);
   const aboutImage = home.features.find((f) => f.id === 'feature-0')?.bg;
-  const videoPoster = home.features.find((f) => f.id === 'feature-1')?.bg;
 
   return (
     <>
@@ -132,51 +110,15 @@ export default function HomePage() {
       </section>
 
       {/* --------------------------------------------- video + investor band */}
-      <section className="grid lg:grid-cols-2">
-        {home.videoId && (
-          <div className="relative min-h-[15rem] lg:min-h-[205px]">
-            <VideoFeature
-              videoId={home.videoId}
-              title="Inside Candelaria"
-              caption="Silver One Resources — Visiting the Candelaria Project"
-              eyebrow="Featured Video"
-              poster={videoPoster}
-              duration="7:24"
-              compact
-            />
-          </div>
-        )}
-
-        <div className="bg-[var(--color-teal-50)] px-6 py-8 sm:px-9 lg:py-6 xl:px-12">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-8">
-            <div>
-              <RevealOnScroll>
-                <Eyebrow>Investor Information</Eyebrow>
-                <h2 className="mt-2.5 font-serif text-[clamp(1.4rem,1.85vw,1.7rem)] leading-[1.08] text-[var(--color-ink)]">
-                  Key Resources
-                  <br />
-                  for Investors
-                </h2>
-                <p className="mt-3 text-[0.8125rem] leading-[1.6] text-[var(--color-slate)]">
-                  Access our latest presentations, financial information, reports and disclosures.
-                </p>
-                <Link href="/investors/" className="btn btn-primary mt-4 h-10">
-                  View Investor Resources
-                  <ArrowRight size={14} aria-hidden />
-                </Link>
-              </RevealOnScroll>
-            </div>
-
-            <RevealGroup className="grid grid-cols-2 gap-2.5 sm:grid-cols-4" stagger={0.035}>
-              {INVESTOR_LINKS.map((l) => (
-                <RevealChild key={l.href} y={12}>
-                  <InvestorResourceCard label={l.label} href={l.href} icon={l.icon} />
-                </RevealChild>
-              ))}
-            </RevealGroup>
-          </div>
-        </div>
-      </section>
+      {home.videoId && (
+        <FeaturedVideoInvestors
+          videoId={home.videoId}
+          poster="/assets/files/2216/dji_0630.jpg"
+          posterAlt="Aerial view of the Candelaria open pit and haul roads, central-west Nevada"
+          videoTitle="Made In America | Silver One Resources (TSXV:SVE) — Visiting the Candelaria Project"
+          videoMeta="Silver One Resources — Visiting the Candelaria Project"
+        />
+      )}
 
       {/* ------------------------------------------------------- latest news */}
       <section className="bg-[var(--color-warm)] py-9 lg:py-9">

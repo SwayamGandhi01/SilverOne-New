@@ -91,6 +91,20 @@ await so.waitForTimeout(700);
 }
 await so.close();
 
+
+const vm = await ctxDesktop.newPage();
+await vm.goto(BASE + '/', { waitUntil: 'networkidle' });
+await vm.locator('button:has-text("Watch Video")').click();
+await vm.waitForTimeout(800);
+{
+  // Exclude the embedded player: the violations inside it are YouTube's
+  // own chrome, not markup this project controls.
+  const r = await new AxeBuilder({ page: vm }).withTags(TAGS).exclude('iframe').analyze();
+  r.violations.forEach((v) => all.push({ route: 'featured video modal', id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length, sample: v.nodes[0]?.html?.slice(0,130) }));
+  console.log((r.violations.length ? 'X' : 'ok') + '  featured video modal' + (r.violations.length ? ' — ' + r.violations.map(v=>v.id).join(', ') : ''));
+}
+await vm.close();
+
 await ctxDesktop.close();
 await ctxMobile.close();
 await browser.close();

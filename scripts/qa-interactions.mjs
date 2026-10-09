@@ -208,7 +208,9 @@ const browser = await chromium.launch();
   const iframesBefore = await page.locator('iframe').count();
   check('no video iframe before interaction', iframesBefore === 0, `${iframesBefore} iframes`);
 
-  await page.locator('button[aria-label^="Play video"]').first().click();
+  // The homepage featured video opens in a modal; scripts/qa-featured-video.mjs
+  // covers that band in depth.
+  await page.locator('button:has-text("Watch Video")').first().click();
   await page.waitForTimeout(900);
   const iframesAfter = await page.locator('iframe').count();
   check('video iframe mounts on click', iframesAfter > 0, `${iframesAfter} iframes`);
